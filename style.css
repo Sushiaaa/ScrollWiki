@@ -37,8 +37,8 @@ body{
 
     scroll-snap-align: start;
     scroll-snap-stop: always;
-    
 }
+
 h1{
     font-family: 'Times New Roman', Times, serif;
     color: rgb(16, 20, 24);

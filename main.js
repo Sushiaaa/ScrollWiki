@@ -1,16 +1,24 @@
 const card_template = document.getElementById("card_template");
 const feed = document.getElementById("scroll_window");
 
+
 async function get_wiki_data(page_name) {
     const response = await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/"+page_name);
     const data = await response.json();
     return data;
 }
-
+async function get_random_article(count){
+    const response = await fetch("https://en.wikipedia.org/w/api.php?origin=*&action=query&list=random&format=json&rnnamespace=0&rnfilterredir=nonredirects&rnlimit="+count);
+    const data = await response.json();
+    return data;
+}
 async function main() {
-    create_card("Brazil")
-    create_card("Germany")
-    create_card("Spain")
+    const articles = await get_random_article(3) 
+    console.log(articles)
+
+    create_card(articles.query.random[0].title)
+    create_card(articles.query.random[1].title)
+    create_card(articles.query.random[2].title)
 }
 async function expand(){
     const response = await fetch("https://en.wikipedia.org/w/rest.php/v1/page/"+current_page_name+"/html");
@@ -35,4 +43,19 @@ async function create_card(title){
 
     feed.appendChild(new_template)
 }
+
+
+function scrollSnapDetector(e) {
+    var atSnappingPoint = e.target.scrollTop % e.target.offsetHeight === 0;
+    var timeOut         = atSnappingPoint ? 0 : 150; //see notes
+
+    clearTimeout(e.target.scrollTimeout); //clear previous timeout
+
+    e.target.scrollTimeout = setTimeout(function() {
+        console.log('Scrolling stopped!');
+    }, timeOut);
+}
+
+feed.addEventListener('scroll', scrollSnapDetector);
+
 main();
